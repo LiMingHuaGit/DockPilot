@@ -2,6 +2,8 @@
 
 A tiny macOS menu-bar app that puts the **Dock on the display you're actually using**.
 
+🌐 **Website:** https://blog.liminghua.fyi/DockPilot/ · [Source of the landing page](docs/)
+
 On a multi-monitor Mac the Dock is tied to the *main* display and only moves if
 you deliberately shove the cursor to the very bottom edge of another screen.
 DockPilot fixes that with two modes:
