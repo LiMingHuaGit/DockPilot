@@ -19,3 +19,6 @@ DerivedData/
 *.p12
 *.cer
 notary-credentials*
+
+# Generated image scratch (keep Resources/ masters)
+outputs/
