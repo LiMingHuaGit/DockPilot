@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://blog.liminghua.fyi/DockPilot/sitemap.xml
+Sitemap: https://dockpilot.liminghua.fyi/sitemap.xml

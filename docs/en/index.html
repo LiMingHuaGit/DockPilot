@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DockPilot — Keep the Dock on the screen you're using | macOS multi-monitor Dock tool</title>
+<meta name="description" content="DockPilot is a tiny macOS menu-bar app that moves the Dock to the display your cursor is on, or pins it to a chosen monitor. It fixes the Dock not following you across multiple displays. No system permissions, lives in the menu bar, Apple Silicon ready, free and open-source (MIT)." />
+<meta name="keywords" content="DockPilot,macOS Dock,move Dock to display,multi monitor dock,dock follows cursor,menu bar app,macOS utility,Apple Silicon,open source" />
+<meta name="author" content="MingHua Li" />
+<meta name="robots" content="index,follow" />
+<meta name="theme-color" content="#0b0d26" />
+<meta name="color-scheme" content="dark" />
+<link rel="canonical" href="https://dockpilot.liminghua.fyi/en/" />
+<link rel="alternate" hreflang="zh-CN" href="https://dockpilot.liminghua.fyi/" />
+<link rel="alternate" hreflang="en" href="https://dockpilot.liminghua.fyi/en/" />
+<link rel="alternate" hreflang="x-default" href="https://dockpilot.liminghua.fyi/" />
+<link rel="icon" type="image/png" href="/assets/icon.png" />
+<link rel="apple-touch-icon" href="/assets/icon.png" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="DockPilot" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:locale:alternate" content="zh_CN" />
+<meta property="og:url" content="https://dockpilot.liminghua.fyi/en/" />
+<meta property="og:title" content="DockPilot — Keep the Dock on the screen you're using" />
+<meta property="og:description" content="Follow the cursor, or pin to a display. Fixes the Dock not following you across monitors. A no-permission, menu-bar, MIT open-source macOS app." />
+<meta property="og:image" content="https://dockpilot.liminghua.fyi/assets/og.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="DockPilot — macOS menu-bar app" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="DockPilot — Keep the Dock on the screen you're using" />
+<meta name="twitter:description" content="Follow the cursor, or pin to a display. A no-permission, menu-bar, MIT open-source macOS multi-monitor Dock tool." />
+<meta name="twitter:image" content="https://dockpilot.liminghua.fyi/assets/og.png" />
+
+<!-- Structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "DockPilot",
+  "description": "A tiny macOS menu-bar app that moves the Dock to the display your cursor is on, or pins it to a chosen monitor. Fixes the Dock not following you across multiple displays.",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "macOS 14.0+",
+  "processorRequirements": "Apple Silicon",
+  "url": "https://dockpilot.liminghua.fyi/en/",
+  "downloadUrl": "https://github.com/LiMingHuaGit/DockPilot/releases",
+  "softwareVersion": "1.0.1",
+  "license": "https://opensource.org/licenses/MIT",
+  "image": "https://dockpilot.liminghua.fyi/assets/og.png",
+  "author": { "@type": "Person", "name": "MingHua Li" },
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+<link rel="stylesheet" href="/assets/site.css" />
+</head>
+<body>
+<div class="aura"></div>
+
+<nav id="nav">
+  <div class="nav-in">
+    <a class="brand" href="#top"><img src="/assets/icon.png" alt="DockPilot" />DockPilot</a>
+    <div class="nav-links">
+      <a class="navlink" href="#features">Features</a>
+      <a class="navlink" href="#how">How</a>
+      <a class="navlink" href="#download">Download</a>
+      <span class="lang"><a href="/">中</a><a class="on" href="/en/" aria-current="true">EN</a></span>
+      <a class="btn btn-ghost" href="https://github.com/LiMingHuaGit/DockPilot" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<header id="top">
+  <div class="hero-pin" id="heroPin">
+    <div class="hero-copy">
+      <div class="eyebrow">macOS menu-bar app</div>
+      <h1>Keep the Dock on <span class="grad-text">the screen you're using</span></h1>
+      <p class="hero-sub">On a multi-monitor Mac the Dock never follows you. DockPilot moves it to the display your cursor is on — or pins it to the monitor you choose.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#download">Download DMG</a>
+        <a class="btn btn-ghost" href="https://github.com/LiMingHuaGit/DockPilot" target="_blank" rel="noopener">View on GitHub →</a>
+      </div>
+      <div class="hero-meta">macOS 14+ · Apple Silicon · No permissions · MIT licensed</div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="stage" id="stage">
+        <div class="mon left"><div class="screen"><div class="wins"><i></i><i></i><i></i></div></div><div class="neck"></div><div class="foot"></div></div>
+        <div class="mon right"><div class="screen"><div class="wins"><i></i><i></i><i></i></div></div><div class="neck"></div><div class="foot"></div></div>
+
+        <div class="hint" id="hint" data-hint-end="Cursor moved right · Dock follows" data-hint-reduced="Dock follows the active screen">Cursor on left screen</div>
+        <div class="menubar" id="menubar"><b></b><span></span></div>
+        <div class="dock" id="dock"><i></i><i></i><i></i><i></i><i></i></div>
+        <svg class="cursor" id="cursor" viewBox="0 0 24 24" fill="none">
+          <path d="M5 3l14 8-6 1.5L10 20 5 3z" fill="#eaf1ff" stroke="#2a2e55" stroke-width="1.2" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="features" class="sec">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Core features</div>
+      <h2>Two modes, one switch</h2>
+      <p>Automatic when you want it, pinned when you don't — all from the menu bar.</p>
+    </div>
+    <div class="features">
+      <div class="card" data-rise>
+        <div class="ic">🧭</div>
+        <h3>Follow the cursor</h3>
+        <p>Wherever your cursor settles, the Dock follows. An adjustable delay (0.2–1.2s) avoids accidental switches when you just pass through.</p>
+      </div>
+      <div class="card" data-rise>
+        <div class="ic">📌</div>
+        <h3>Pin to a display</h3>
+        <p>Lock the Dock to the monitor you pick. It's remembered by a stable display ID, so it stays put across sleep and reconnects.</p>
+      </div>
+      <div class="card" data-rise>
+        <div class="ic">🔓</div>
+        <h3>No system permissions</h3>
+        <p>No Accessibility permission required. Cursor tracking polls a public API, and screen switching uses the public display-configuration API.</p>
+      </div>
+      <div class="card" data-rise>
+        <div class="ic">▫️</div>
+        <h3>Lives in the menu bar</h3>
+        <p>A background app with no Dock icon. The menu shows the current mode at a glance — switch anytime, launch at login.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how" class="sec how">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">How it works</div>
+      <h2>How it actually works</h2>
+    </div>
+    <div class="note">
+      macOS has no public API to move <b>only the Dock</b>. The Dock and the menu bar both belong to the <b>main display</b>, so DockPilot brings the Dock over by making the target screen the main display — <b>the menu bar moves along with it</b>. That's the accepted trade-off for reliable behavior.
+    </div>
+    <div class="steps">
+      <div class="step" data-rise><div class="n">STEP 01</div><h3>Detect the cursor's screen</h3><p>Polls the cursor position to tell which display you're working on.</p><div class="arrow">→</div></div>
+      <div class="step" data-rise><div class="n">STEP 02</div><h3>Set it as main</h3><p>Makes the target screen the main display via CoreGraphics — no special permission.</p><div class="arrow">→</div></div>
+      <div class="step" data-rise><div class="n">STEP 03</div><h3>The Dock follows</h3><p>The Dock and menu bar appear on the screen you're using.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="download" class="sec dl">
+  <div class="wrap">
+    <div class="dl-card" data-rise>
+      <img src="/assets/icon.png" alt="DockPilot" />
+      <h2>Hand your Dock to DockPilot</h2>
+      <p>Free, open-source, no ads. Download the DMG and drag it into Applications, or build from source.</p>
+      <div class="dl-cta">
+        <a class="btn btn-primary" href="https://github.com/LiMingHuaGit/DockPilot/releases/download/v1.0.1/DockPilot-1.0.1.dmg">Download DMG v1.0.1</a>
+        <a class="btn btn-ghost" href="https://github.com/LiMingHuaGit/DockPilot" target="_blank" rel="noopener">View source</a>
+      </div>
+      <div class="dl-sub">macOS 14 (Sonoma)+ · Apple Silicon · Un-notarized — right-click → Open on first launch</div>
+      <span class="code">git clone … &amp;&amp; make dmg</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-in">
+    <a class="brand" href="#top"><img src="/assets/icon.png" alt="" style="width:24px;height:24px;border-radius:7px" />DockPilot</a>
+    <span class="sp"></span>
+    <span>MIT License · © 2026 MingHua Li</span>
+    <a href="/">中文</a>
+    <a href="https://github.com/LiMingHuaGit/DockPilot" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+</footer>
+
+<script src="/vendor/gsap.min.js"></script>
+<script src="/vendor/ScrollTrigger.min.js"></script>
+<script src="/vendor/lenis.min.js"></script>
+<script src="/assets/site.js"></script>
+</body>
+</html>
