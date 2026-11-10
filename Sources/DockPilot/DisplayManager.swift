@@ -61,16 +61,24 @@ enum DisplayManager {
         let shift = CGDisplayBounds(target).origin
 
         var config: CGDisplayConfigRef?
-        guard CGBeginDisplayConfiguration(&config) == .success, let config else { return false }
+        let begin = CGBeginDisplayConfiguration(&config)
+        guard begin == .success, let config else {
+            Log.write("CGBeginDisplayConfiguration failed: \(begin.rawValue)")
+            return false
+        }
 
         for d in activeDisplayIDs() {
             let b = CGDisplayBounds(d)
             let x = Int32((b.origin.x - shift.x).rounded())
             let y = Int32((b.origin.y - shift.y).rounded())
-            CGConfigureDisplayOrigin(config, d, x, y)
+            let e = CGConfigureDisplayOrigin(config, d, x, y)
+            if e != .success {
+                Log.write("CGConfigureDisplayOrigin(\(d)) failed: \(e.rawValue)")
+            }
         }
 
         let result = CGCompleteDisplayConfiguration(config, .permanently)
+        Log.write("CGCompleteDisplayConfiguration result=\(result.rawValue) nowMain=\(CGMainDisplayID())")
         if result != .success {
             CGCancelDisplayConfiguration(config)
             return false

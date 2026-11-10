@@ -16,6 +16,7 @@ final class CursorMonitor {
     private var timer: Timer?
     private var candidate: CGDirectDisplayID?
     private var candidateSince: Date?
+    private var tickCount = 0
 
     var isRunning: Bool { timer != nil }
 
@@ -37,6 +38,8 @@ final class CursorMonitor {
     }
 
     private func tick() {
+        tickCount += 1
+        if tickCount == 1 || tickCount % 50 == 0 { Log.write("tick #\(tickCount)") }
         let loc = NSEvent.mouseLocation
         guard let screen = NSScreen.screens.first(where: { NSMouseInRect(loc, $0.frame, false) }),
               let id = screen.displayID

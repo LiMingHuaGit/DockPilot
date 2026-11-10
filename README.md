@@ -86,6 +86,25 @@ Sources/DockPilot/
 scripts/                # app bundling, signing, notarization
 ```
 
+## Troubleshooting
+
+**Auto-follow isn't working / "it only works after I switch manually".**
+You are probably in **manual** mode. Picking a display once puts the app in
+*固定到指定屏幕* (manual), which turns the cursor monitor off. Open the menu and
+choose **自动跟随光标** to resume auto-follow. The menu's top line always shows the
+current mode. (Mode is remembered across launches.)
+
+**Enable a diagnostic log.** Create the sentinel file, relaunch, reproduce, then
+read the log:
+
+```bash
+touch /tmp/dockpilot.debug      # turn logging on
+open -n /Applications/DockPilot.app
+# ... reproduce ...
+cat /tmp/dockpilot.log
+rm /tmp/dockpilot.debug         # turn logging off
+```
+
 ## License
 
 [MIT](LICENSE) © 2026 MingHua Li

@@ -11,12 +11,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     // MARK: Lifecycle
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        Log.write("didFinishLaunching pid=\(ProcessInfo.processInfo.processIdentifier) mode=\(settings.mode.rawValue)")
         setupStatusItem()
 
         monitor.onSettled = { [weak self] displayID in
-            guard self?.settings.mode == .auto else { return }
-            DisplayManager.setMainDisplay(displayID)
-            // Menu rebuilds lazily on open, so no eager refresh needed.
+            guard let self else { return }
+            let isAuto = self.settings.mode == .auto
+            Log.write("onSettled display=\(displayID) mode=\(self.settings.mode.rawValue) willSwitch=\(isAuto)")
+            guard isAuto else { return }
+            let ok = DisplayManager.setMainDisplay(displayID)
+            Log.write("setMainDisplay(\(displayID)) -> \(ok)")
         }
 
         NotificationCenter.default.addObserver(
@@ -52,7 +56,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     func menuNeedsUpdate(_ menu: NSMenu) {
         menu.removeAllItems()
 
-        menu.addItem(disabledTitle("DockPilot"))
+        let statusText: String
+        switch settings.mode {
+        case .auto:
+            statusText = "DockPilot · 自动跟随光标"
+        case .manual:
+            let name = DisplayManager.activeDisplays().first { $0.uuid == settings.pinnedDisplayUUID }?.name
+            statusText = "DockPilot · 固定到 \(name ?? "指定屏幕")"
+        }
+        menu.addItem(disabledTitle(statusText))
         menu.addItem(.separator())
 
         // Mode selector.
@@ -165,14 +177,27 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     // MARK: Mode application
 
     private func applyCurrentMode() {
+        Log.write("applyCurrentMode mode=\(settings.mode.rawValue)")
         switch settings.mode {
         case .auto:
             monitor.debounce = settings.debounceSeconds
             monitor.start()
+            Log.write("monitor started running=\(monitor.isRunning)")
+            applyForCurrentCursor()
         case .manual:
             monitor.stop()
             applyManualPin()
         }
+    }
+
+    /// Immediately move the Dock to the display the cursor is currently on
+    /// (used on launch / when entering auto mode so the effect is instant).
+    private func applyForCurrentCursor() {
+        let loc = NSEvent.mouseLocation
+        let screen = NSScreen.screens.first(where: { NSMouseInRect(loc, $0.frame, false) })
+        Log.write("applyForCurrentCursor loc=\(loc) screen=\(screen?.displayID.map(String.init) ?? "nil") main=\(CGMainDisplayID())")
+        guard let screen, let id = screen.displayID, id != CGMainDisplayID() else { return }
+        DisplayManager.setMainDisplay(id)
     }
 
     private func applyManualPin() {
