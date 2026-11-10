@@ -1,0 +1,21 @@
+# Build artifacts
+.build/
+build/
+*.o
+*.swiftmodule
+
+# Xcode / SwiftPM
+.swiftpm/
+Package.resolved
+DerivedData/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+
+# macOS
+.DS_Store
+
+# Notarization / signing secrets
+*.p8
+*.p12
+*.cer
+notary-credentials*
