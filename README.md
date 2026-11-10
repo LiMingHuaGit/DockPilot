@@ -35,6 +35,13 @@ make run
 make build          # release binary
 make app            # assemble build/DockPilot.app (ad-hoc signed)
 make install        # copy to /Applications
+make dmg            # package a drag-to-install DMG into build/
+```
+
+To sign with your own identity (so it launches cleanly on your Mac):
+
+```bash
+SIGN_IDENTITY="Apple Development: Your Name (TEAMID)" make dmg
 ```
 
 Quit from the app's own menu (**退出 DockPilot**).
@@ -56,8 +63,8 @@ Ad-hoc signing is fine for personal use. To distribute to others, sign with a
 **Developer ID Application** certificate and notarize:
 
 ```bash
-# 1. Build + sign with your Developer ID
-SIGN_IDENTITY="Developer ID Application: Your Name (TEAMID)" ./scripts/build-app.sh
+# 1. Build + sign with your Developer ID (timestamp required for notarization)
+SIGN_IDENTITY="Developer ID Application: Your Name (TEAMID)" TIMESTAMP=1 ./scripts/build-app.sh
 
 # 2. Store notary credentials once
 xcrun notarytool store-credentials "dockpilot-notary" \

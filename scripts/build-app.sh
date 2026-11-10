@@ -29,7 +29,10 @@ if [[ -f "Resources/AppIcon.icns" ]]; then
 fi
 
 echo "==> Code signing (identity: ${SIGN_IDENTITY})"
-codesign --force --deep --options runtime --timestamp \
+# --timestamp needs network and is only required for notarization; enable with TIMESTAMP=1.
+TS_FLAG="--timestamp=none"
+if [[ "${TIMESTAMP:-0}" == "1" ]]; then TS_FLAG="--timestamp"; fi
+codesign --force --options runtime ${TS_FLAG} \
     --sign "${SIGN_IDENTITY}" "${BUNDLE}"
 
 echo "==> Verifying signature"
