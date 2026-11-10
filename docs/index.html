@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DockPilot — 让程序坞待在你正用的那块屏 | macOS 多显示器 Dock 工具</title>
+<meta name="description" content="DockPilot 是一个极简的 macOS 菜单栏工具：自动把程序坞（Dock）跟随光标移到当前屏幕，或固定到你指定的显示器。解决多显示器下 Dock 不跟随的问题。零系统权限，常驻菜单栏，Apple Silicon 可用，MIT 开源免费。" />
+<meta name="keywords" content="DockPilot,macOS Dock,程序坞,多显示器,Dock 跟随,move dock to display,menu bar app,macOS 工具,multi monitor dock,Apple Silicon,开源" />
+<meta name="author" content="MingHua Li" />
+<meta name="robots" content="index,follow" />
+<meta name="theme-color" content="#0b0d26" />
+<meta name="color-scheme" content="dark" />
+<link rel="canonical" href="https://liminghuagit.github.io/DockPilot/" />
+<link rel="icon" type="image/png" href="assets/icon.png" />
+<link rel="apple-touch-icon" href="assets/icon.png" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="DockPilot" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:url" content="https://liminghuagit.github.io/DockPilot/" />
+<meta property="og:title" content="DockPilot — 让程序坞待在你正用的那块屏" />
+<meta property="og:description" content="自动跟随光标 / 手动固定到指定屏。解决多显示器下 Dock 不跟随的痛点。零权限、常驻菜单栏、MIT 开源的 macOS 小工具。" />
+<meta property="og:image" content="https://liminghuagit.github.io/DockPilot/assets/og.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="DockPilot — macOS 菜单栏工具" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="DockPilot — 让程序坞待在你正用的那块屏" />
+<meta name="twitter:description" content="自动跟随光标 / 手动固定到指定屏。零权限、常驻菜单栏、MIT 开源的 macOS 多显示器 Dock 工具。" />
+<meta name="twitter:image" content="https://liminghuagit.github.io/DockPilot/assets/og.png" />
+
+<!-- Structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "DockPilot",
+  "description": "一个极简的 macOS 菜单栏工具：自动把程序坞跟随光标移到当前屏幕，或固定到指定显示器。解决多显示器下 Dock 不跟随的问题。",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "macOS 14.0+",
+  "processorRequirements": "Apple Silicon",
+  "url": "https://liminghuagit.github.io/DockPilot/",
+  "downloadUrl": "https://github.com/LiMingHuaGit/DockPilot/releases",
+  "softwareVersion": "1.0.1",
+  "license": "https://opensource.org/licenses/MIT",
+  "image": "https://liminghuagit.github.io/DockPilot/assets/og.png",
+  "author": { "@type": "Person", "name": "MingHua Li" },
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+<style>
+  :root{
+    --bg:#0b0d26; --bg2:#0e1136; --panel:#141737;
+    --ink:#eef0ff; --muted:#9aa0d4; --muted2:#6f76ad;
+    --indigo:#6d5cff; --violet:#9b6bff; --cyan:#39d7ff;
+    --line:rgba(255,255,255,.09);
+    --glass:rgba(255,255,255,.045);
+    --radius:20px;
+    --maxw:1120px;
+    --grad:linear-gradient(120deg,var(--indigo),var(--violet) 45%,var(--cyan));
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,"SF Pro Display","SF Pro Text","Segoe UI",system-ui,"PingFang SC","Microsoft YaHei",sans-serif;
+    line-height:1.6; -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .eyebrow{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan);font-weight:600}
+  .grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  /* ambient background glow */
+  .aura{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .aura::before,.aura::after{content:"";position:absolute;border-radius:50%;filter:blur(90px);opacity:.5}
+  .aura::before{width:620px;height:620px;left:-140px;top:-160px;background:radial-gradient(circle,rgba(109,92,255,.7),transparent 70%)}
+  .aura::after{width:680px;height:680px;right:-180px;top:240px;background:radial-gradient(circle,rgba(57,215,255,.45),transparent 70%)}
+
+  /* nav */
+  nav{position:fixed;top:0;left:0;right:0;z-index:50;transition:background .3s,border-color .3s,backdrop-filter .3s;border-bottom:1px solid transparent}
+  nav.scrolled{background:rgba(11,13,38,.72);backdrop-filter:blur(14px) saturate(140%);border-bottom:1px solid var(--line)}
+  .nav-in{max-width:var(--maxw);margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:20px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px}
+  .brand img{width:30px;height:30px;border-radius:8px}
+  .nav-links{margin-left:auto;display:flex;align-items:center;gap:26px;font-size:14px;color:var(--muted)}
+  .nav-links a:hover{color:var(--ink)}
+  .btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:11px 20px;font-weight:600;font-size:14px;border:1px solid transparent;cursor:pointer;transition:transform .15s,box-shadow .2s,background .2s,border-color .2s;white-space:nowrap}
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:var(--grad);color:#07081c;box-shadow:0 8px 28px rgba(109,92,255,.4)}
+  .btn-primary:hover{box-shadow:0 12px 40px rgba(57,215,255,.5)}
+  .btn-ghost{border-color:var(--line);color:var(--ink);background:var(--glass)}
+  .btn-ghost:hover{border-color:rgba(255,255,255,.28)}
+  .nav-links .btn{padding:9px 16px}
+
+  /* hero */
+  header{position:relative;z-index:1}
+  .hero-pin{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:122px 0 48px}
+  .hero-copy{text-align:center;max-width:760px;margin:0 auto;padding:0 24px;position:relative;z-index:3}
+  h1{font-size:clamp(34px,6vw,62px);line-height:1.08;letter-spacing:-.02em;margin:18px 0 0;font-weight:800}
+  .hero-sub{font-size:clamp(16px,2.1vw,20px);color:var(--muted);margin:20px auto 0;max-width:600px}
+  .hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:30px}
+  .hero-meta{margin-top:18px;font-size:13px;color:var(--muted2);letter-spacing:.02em}
+
+  /* stage with two monitors */
+  .stage-wrap{position:relative;z-index:2;margin:40px auto 0;max-width:900px;width:100%;padding:0 24px;flex:none}
+  .stage{position:relative;width:100%;aspect-ratio:16/8}
+  /* a monitor = bezel + screen + stand */
+  .mon{position:absolute;top:0;width:45%;height:84%;border-radius:16px;padding:10px 10px 12px;
+    background:linear-gradient(160deg,#30355f,#1a1d40);
+    box-shadow:0 36px 60px -28px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.12),inset 0 0 0 1px rgba(255,255,255,.05)}
+  .mon.left{left:1%}
+  .mon.right{left:54%}
+  .mon .screen{position:relative;width:100%;height:100%;border-radius:8px;overflow:hidden;
+    background:
+      radial-gradient(130% 120% at 25% 0%,rgba(123,108,255,.5),transparent 58%),
+      radial-gradient(120% 130% at 100% 100%,rgba(57,215,255,.4),transparent 55%),
+      linear-gradient(160deg,#2b2f63,#161a3e);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+  .mon .screen::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(255,255,255,.1),transparent 40%);opacity:.6}
+  .mon .wins{position:absolute;inset:22% 14% 26% 14%;display:flex;gap:8px;opacity:.55;z-index:1}
+  .mon .wins i{flex:1;border-radius:7px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1)}
+  .mon .neck{position:absolute;left:50%;transform:translateX(-50%);bottom:-7.5%;width:14%;height:9%;
+    background:linear-gradient(#2b2f5a,#1a1d40);border-radius:0 0 7px 7px}
+  .mon .foot{position:absolute;left:50%;transform:translateX(-50%);bottom:-10%;width:30%;height:2.6%;border-radius:6px;
+    background:#272b52;box-shadow:0 10px 20px -8px rgba(0,0,0,.7)}
+
+  /* moving overlays (belong to the ACTIVE monitor) */
+  .menubar,.dock,.cursor{position:absolute;z-index:7;will-change:left,transform;pointer-events:none}
+  .menubar{top:4%;left:23.5%;transform:translateX(-50%);width:40%;height:5%;border-radius:8px 8px 3px 3px;
+    background:linear-gradient(90deg,rgba(255,255,255,.3),rgba(255,255,255,.14));backdrop-filter:blur(3px);
+    border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;gap:6px;padding:0 9px;
+    box-shadow:0 0 26px rgba(57,215,255,.5)}
+  .menubar b{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.7);flex:none}
+  .menubar span{margin-left:auto;height:6px;width:38%;border-radius:3px;background:rgba(255,255,255,.4)}
+  .dock{bottom:14%;left:23.5%;transform:translateX(-50%);display:flex;gap:6px;padding:6px 9px;border-radius:14px;
+    background:rgba(255,255,255,.17);border:1px solid rgba(255,255,255,.32);backdrop-filter:blur(7px);
+    box-shadow:0 0 36px rgba(109,92,255,.6),0 12px 26px -8px rgba(0,0,0,.65)}
+  .dock i{width:clamp(16px,2.8vw,26px);aspect-ratio:1;border-radius:8px;flex:none}
+  .dock i:nth-child(1){background:linear-gradient(135deg,#6d5cff,#39d7ff)}
+  .dock i:nth-child(2){background:linear-gradient(135deg,#ff7eb6,#ffb86b)}
+  .dock i:nth-child(3){background:linear-gradient(135deg,#5ce1a6,#39d7ff)}
+  .dock i:nth-child(4){background:linear-gradient(135deg,#9b6bff,#6d5cff)}
+  .dock i:nth-child(5){background:linear-gradient(135deg,#ffd166,#ff7eb6)}
+  .cursor{bottom:44%;left:27%;width:28px;height:28px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.55))}
+  .hint{position:absolute;z-index:7;left:23.5%;top:-11%;transform:translateX(-50%);font-size:12px;color:var(--cyan);
+    letter-spacing:.14em;text-transform:uppercase;font-weight:600;white-space:nowrap;opacity:.9}
+
+  /* sections */
+  section{position:relative;z-index:1}
+  .sec{padding:92px 0}
+  .sec-head{text-align:center;max-width:680px;margin:0 auto 54px}
+  .sec-head h2{font-size:clamp(26px,3.6vw,40px);margin:12px 0 0;letter-spacing:-.01em;font-weight:800}
+  .sec-head p{color:var(--muted);margin:14px 0 0;font-size:16px}
+
+  .features{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  .card{background:var(--glass);border:1px solid var(--line);border-radius:var(--radius);padding:26px;
+    transition:border-color .25s,transform .25s,background .25s;will-change:transform,opacity}
+  .card:hover{border-color:rgba(255,255,255,.22);transform:translateY(-3px);background:rgba(255,255,255,.06)}
+  .card .ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;margin-bottom:16px;
+    background:rgba(109,92,255,.16);border:1px solid rgba(109,92,255,.3)}
+  .card h3{margin:0 0 8px;font-size:18px}
+  .card p{margin:0;color:var(--muted);font-size:14.5px}
+
+  /* how it works */
+  .how{background:linear-gradient(180deg,transparent,rgba(109,92,255,.05),transparent)}
+  .note{max-width:720px;margin:0 auto 46px;text-align:center;color:var(--muted);font-size:15.5px;
+    background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:20px 24px}
+  .note b{color:var(--ink)}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;counter-reset:s}
+  .step{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:28px 24px;will-change:transform,opacity}
+  .step .n{font-size:13px;font-weight:700;color:var(--cyan);letter-spacing:.1em}
+  .step h3{margin:10px 0 6px;font-size:17px}
+  .step p{margin:0;color:var(--muted);font-size:14px}
+  .step .arrow{position:absolute;right:-13px;top:50%;transform:translateY(-50%);color:var(--muted2);font-size:20px;z-index:2}
+  .step:last-child .arrow{display:none}
+
+  /* download */
+  .dl{text-align:center}
+  .dl-card{max-width:720px;margin:0 auto;background:
+      radial-gradient(120% 140% at 50% 0%,rgba(109,92,255,.22),transparent 60%),var(--panel);
+    border:1px solid var(--line);border-radius:28px;padding:54px 32px;position:relative;overflow:hidden}
+  .dl-card img{width:84px;height:84px;border-radius:20px;box-shadow:0 14px 40px -10px rgba(109,92,255,.6)}
+  .dl-card h2{font-size:clamp(24px,3.4vw,34px);margin:20px 0 0;font-weight:800}
+  .dl-card p{color:var(--muted);margin:12px auto 0;max-width:460px}
+  .dl-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:26px}
+  .dl-sub{margin-top:18px;font-size:13px;color:var(--muted2)}
+  .code{display:inline-block;margin-top:14px;font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:13px;
+    background:rgba(0,0,0,.35);border:1px solid var(--line);border-radius:10px;padding:8px 14px;color:var(--cyan)}
+
+  footer{border-top:1px solid var(--line);padding:40px 0;position:relative;z-index:1;margin-top:40px}
+  .foot-in{display:flex;align-items:center;gap:16px;flex-wrap:wrap;color:var(--muted2);font-size:14px}
+  .foot-in .brand{font-size:15px}
+  .foot-in .sp{margin-left:auto}
+  .foot-in a:hover{color:var(--ink)}
+
+  @media(max-width:760px){
+    .features,.steps{grid-template-columns:1fr}
+    .step .arrow{display:none}
+    .nav-links a:not(.btn){display:none}
+    .stage{padding-top:64%}
+    .sec{padding:68px 0}
+  }
+  @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="aura"></div>
+
+<nav id="nav">
+  <div class="nav-in">
+    <a class="brand" href="#top"><img src="assets/icon.png" alt="DockPilot" />DockPilot</a>
+    <div class="nav-links">
+      <a href="#features">功能</a>
+      <a href="#how">原理</a>
+      <a href="#download">下载</a>
+      <a class="btn btn-ghost" href="https://github.com/LiMingHuaGit/DockPilot" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<header id="top">
+  <div class="hero-pin" id="heroPin">
+    <div class="hero-copy">
+      <div class="eyebrow">macOS 菜单栏工具</div>
+      <h1>让程序坞，<span class="grad-text">待在你正用的那块屏</span></h1>
+      <p class="hero-sub">多显示器下，Dock 总是不跟你走。DockPilot 自动把程序坞跟随光标移到当前屏幕，或固定到你指定的显示器。</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#download">下载 DMG</a>
+        <a class="btn btn-ghost" href="https://github.com/LiMingHuaGit/DockPilot" target="_blank" rel="noopener">在 GitHub 查看 →</a>
+      </div>
+      <div class="hero-meta">macOS 14+ · Apple Silicon · 零系统权限 · MIT 开源</div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="stage" id="stage">
+        <div class="mon left"><div class="screen"><div class="wins"><i></i><i></i><i></i></div></div><div class="neck"></div><div class="foot"></div></div>
+        <div class="mon right"><div class="screen"><div class="wins"><i></i><i></i><i></i></div></div><div class="neck"></div><div class="foot"></div></div>
+
+        <div class="hint" id="hint">光标在左屏</div>
+        <div class="menubar" id="menubar"><b></b><span></span></div>
+        <div class="dock" id="dock"><i></i><i></i><i></i><i></i><i></i></div>
+        <svg class="cursor" id="cursor" viewBox="0 0 24 24" fill="none">
+          <path d="M5 3l14 8-6 1.5L10 20 5 3z" fill="#eaf1ff" stroke="#2a2e55" stroke-width="1.2" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="features" class="sec">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">核心功能</div>
+      <h2>两种模式，一个开关</h2>
+      <p>想自动就自动，想钉死就钉死。全部藏在菜单栏里，一点即用。</p>
+    </div>
+    <div class="features">
+      <div class="card" data-rise>
+        <div class="ic">🧭</div>
+        <h3>自动跟随光标</h3>
+        <p>光标移到哪块屏并停留，Dock 就跟到哪块屏。切换延迟可调（0.2–1.2 秒），避免划过屏幕时误切。</p>
+      </div>
+      <div class="card" data-rise>
+        <div class="ic">📌</div>
+        <h3>手动固定到指定屏</h3>
+        <p>把 Dock 钉在你选定的显示器上。用稳定的显示器标识记忆，睡眠、重新插拔后也不会乱跑。</p>
+      </div>
+      <div class="card" data-rise>
+        <div class="ic">🔓</div>
+        <h3>零系统权限</h3>
+        <p>不需要辅助功能权限。光标跟踪用系统接口轮询实现，切换屏幕走公开的显示配置 API，干净无感。</p>
+      </div>
+      <div class="card" data-rise>
+        <div class="ic">▫️</div>
+        <h3>常驻菜单栏</h3>
+        <p>没有 Dock 图标、不占空间的后台小工具。菜单顶部随时显示当前模式，随手切换、开机自启。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how" class="sec how">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">工作原理</div>
+      <h2>它是怎么做到的</h2>
+    </div>
+    <div class="note">
+      macOS 没有公开接口可以<b>只移动程序坞</b>。Dock 和菜单栏都归属于「主显示器」，所以 DockPilot 通过把目标屏设为主显示器来把 Dock 带过去——<b>菜单栏会和 Dock 一起移动</b>。这是为换取可靠行为而接受的取舍。
+    </div>
+    <div class="steps">
+      <div class="step" data-rise><div class="n">STEP 01</div><h3>检测光标所在屏</h3><p>轮询光标位置，判断你当前在操作哪一块显示器。</p><div class="arrow">→</div></div>
+      <div class="step" data-rise><div class="n">STEP 02</div><h3>设为主显示器</h3><p>通过 CoreGraphics 把目标屏设为主显示器，无需任何特殊权限。</p><div class="arrow">→</div></div>
+      <div class="step" data-rise><div class="n">STEP 03</div><h3>Dock 随之移动</h3><p>程序坞与菜单栏一起出现在你正在使用的那块屏上。</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="download" class="sec dl">
+  <div class="wrap">
+    <div class="dl-card" data-rise>
+      <img src="assets/icon.png" alt="DockPilot" />
+      <h2>把 Dock 交给 DockPilot</h2>
+      <p>免费、开源、无广告。下载 DMG 拖入「应用程序」即可，或从源码自行构建。</p>
+      <div class="dl-cta">
+        <a class="btn btn-primary" href="https://github.com/LiMingHuaGit/DockPilot/releases" target="_blank" rel="noopener">下载 DMG（Releases）</a>
+        <a class="btn btn-ghost" href="https://github.com/LiMingHuaGit/DockPilot" target="_blank" rel="noopener">查看源码</a>
+      </div>
+      <div class="dl-sub">macOS 14 (Sonoma) 及以上 · Apple Silicon</div>
+      <span class="code">git clone … &amp;&amp; make dmg</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-in">
+    <a class="brand" href="#top"><img src="assets/icon.png" alt="" style="width:24px;height:24px;border-radius:7px" />DockPilot</a>
+    <span class="sp"></span>
+    <span>MIT License · © 2026 MingHua Li</span>
+    <a href="https://github.com/LiMingHuaGit/DockPilot" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+</footer>
+
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/ScrollTrigger.min.js"></script>
+<script src="vendor/lenis.min.js"></script>
+<script>
+(function(){
+  var nav=document.getElementById('nav');
+  var onScroll=function(){ nav.classList.toggle('scrolled', window.scrollY>12); };
+  onScroll(); window.addEventListener('scroll',onScroll,{passive:true});
+
+  if(!window.gsap){return;}
+  gsap.registerPlugin(ScrollTrigger);
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Lenis smooth scroll wired to ScrollTrigger
+  if(window.Lenis && !reduce){
+    var lenis=new Lenis({duration:1.05,smoothWheel:true});
+    lenis.on('scroll',ScrollTrigger.update);
+    gsap.ticker.add(function(t){ lenis.raf(t*1000); });
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  var mm=gsap.matchMedia();
+
+  // ---- Scroll-driven hero: the active Dock + menubar + cursor follow to the other screen ----
+  mm.add("(prefers-reduced-motion: no-preference)", function(){
+    var tl=gsap.timeline({
+      scrollTrigger:{ trigger:"#heroPin", start:"top top", end:"+=120%", scrub:0.6, pin:true, anticipatePin:1 }
+    });
+    // left monitor center ~23.5%, right monitor center ~76.5%
+    tl.to(["#dock","#menubar","#hint"], {left:"76.5%", ease:"power1.inOut"}, 0)
+      .to("#cursor", {left:"79%", bottom:"46%", ease:"power1.inOut"}, 0)
+      .to("#hint", {opacity:0, duration:.18}, 0)
+      .add(function(){ var h=document.getElementById('hint'); if(h) h.textContent="光标移到右屏 · Dock 跟过去"; })
+      .to("#hint", {opacity:.9, duration:.2}, 0.55);
+  });
+
+  // reduced motion: place the active cluster on the right, no pin
+  mm.add("(prefers-reduced-motion: reduce)", function(){
+    gsap.set(["#dock","#menubar","#hint"], {left:"76.5%"});
+    gsap.set("#cursor",{left:"79%"});
+    var h=document.getElementById('hint'); if(h){h.textContent="Dock 跟随当前屏";}
+  });
+
+  // ---- Block entrance animations (scroll-triggered, once) ----
+  gsap.utils.toArray('[data-rise]').forEach(function(el,i){
+    gsap.from(el,{
+      y:34, opacity:0, duration:.7, ease:"back.out(1.5)",
+      scrollTrigger:{ trigger:el, start:"top 86%", once:true },
+      delay:(i% (window.innerWidth<760?1:2))*0.06
+    });
+  });
+  gsap.utils.toArray('.sec-head').forEach(function(el){
+    gsap.from(el.children,{ y:22, opacity:0, duration:.6, stagger:.08, ease:"power2.out",
+      scrollTrigger:{ trigger:el, start:"top 88%", once:true } });
+  });
+})();
+</script>
+</body>
+</html>

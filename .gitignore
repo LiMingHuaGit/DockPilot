@@ -22,3 +22,6 @@ notary-credentials*
 
 # Generated image scratch (keep Resources/ masters)
 outputs/
+
+# oil-ui task workspace
+.oil-ui/
