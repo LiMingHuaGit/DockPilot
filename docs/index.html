@@ -6,7 +6,7 @@
 <title>DockPilot — 让程序坞待在你正用的那块屏 | macOS 多显示器 Dock 工具</title>
 <meta name="description" content="DockPilot 是一个极简的 macOS 菜单栏工具：自动把程序坞（Dock）跟随光标移到当前屏幕，或固定到你指定的显示器。解决多显示器下 Dock 不跟随的问题。零系统权限，常驻菜单栏，Apple Silicon 可用，MIT 开源免费。" />
 <meta name="keywords" content="DockPilot,macOS Dock,程序坞,多显示器,Dock 跟随,move dock to display,menu bar app,macOS 工具,multi monitor dock,Apple Silicon,开源" />
-<meta name="author" content="MingHua Li" />
+<meta name="author" content="李明华 (Minghua Li)" />
 <meta name="robots" content="index,follow" />
 <meta name="theme-color" content="#0b0d26" />
 <meta name="color-scheme" content="dark" />
@@ -47,12 +47,25 @@
   "operatingSystem": "macOS 14.0+",
   "processorRequirements": "Apple Silicon",
   "url": "https://dockpilot.liminghua.fyi/",
-  "downloadUrl": "https://github.com/LiMingHuaGit/DockPilot/releases",
+  "downloadUrl": "https://github.com/LiMingHuaGit/DockPilot/releases/download/v1.0.1/DockPilot-1.0.1.dmg",
   "softwareVersion": "1.0.1",
   "license": "https://opensource.org/licenses/MIT",
   "image": "https://dockpilot.liminghua.fyi/assets/og.png",
-  "author": { "@type": "Person", "name": "MingHua Li" },
+  "author": { "@id": "https://liminghua.fyi/#person" },
+  "publisher": { "@id": "https://liminghua.fyi/#person" },
+  "dateModified": "2026-11-17",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": "https://liminghua.fyi/#person",
+  "name": "李明华",
+  "alternateName": "Minghua Li",
+  "url": "https://liminghua.fyi/",
+  "sameAs": ["https://github.com/LiMingHuaGit"]
 }
 </script>
 <link rel="stylesheet" href="/assets/site.css" />
@@ -62,7 +75,7 @@
 
 <nav id="nav">
   <div class="nav-in">
-    <a class="brand" href="#top"><img src="/assets/icon.png" alt="DockPilot" />DockPilot</a>
+    <a class="brand" href="#top"><img src="/assets/icon.webp" alt="DockPilot" width="40" height="40" />DockPilot</a>
     <div class="nav-links">
       <a class="navlink" href="#features">功能</a>
       <a class="navlink" href="#how">原理</a>
@@ -72,6 +85,8 @@
     </div>
   </div>
 </nav>
+
+<main id="main">
 
 <header id="top">
   <div class="hero-pin" id="heroPin">
@@ -154,7 +169,7 @@
 <section id="download" class="sec dl">
   <div class="wrap">
     <div class="dl-card" data-rise>
-      <img src="/assets/icon.png" alt="DockPilot" />
+      <img src="/assets/icon.webp" alt="DockPilot" width="40" height="40" />
       <h2>把 Dock 交给 DockPilot</h2>
       <p>免费、开源、无广告。下载 DMG 拖入「应用程序」即可，或从源码自行构建。</p>
       <div class="dl-cta">
@@ -167,13 +182,16 @@
   </div>
 </section>
 
+</main>
+
 <footer>
   <div class="wrap foot-in">
-    <a class="brand" href="#top"><img src="/assets/icon.png" alt="" style="width:24px;height:24px;border-radius:7px" />DockPilot</a>
+    <a class="brand" href="#top"><img src="/assets/icon.webp" alt="" width="24" height="24" style="width:24px;height:24px;border-radius:7px" />DockPilot</a>
     <span class="sp"></span>
     <span>MIT License · © 2026 MingHua Li</span>
     <a href="/en/">English</a>
     <a href="https://github.com/LiMingHuaGit/DockPilot" target="_blank" rel="noopener">GitHub ↗</a>
+    <a href="https://github.com/LiMingHuaGit/DockPilot/issues" target="_blank" rel="noopener">支持 / Issues ↗</a>
   </div>
 </footer>
 
