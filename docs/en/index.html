@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-<title>DockPilot — Keep the Dock on the screen you're using | macOS multi-monitor Dock tool</title>
-<meta name="description" content="DockPilot is a tiny macOS menu-bar app that moves the Dock to the display your cursor is on, or pins it to a chosen monitor. It fixes the Dock not following you across multiple displays. No system permissions, lives in the menu bar, Apple Silicon ready, free and open-source (MIT)." />
+<title>DockPilot — Move the Mac Dock to the Monitor You're Using</title>
+<meta name="description" content="Move the Mac Dock to the monitor you're using — follow the cursor or lock it to one display. Fixes the Dock on the wrong monitor with multiple displays. Free, MIT, Apple Silicon." />
 <meta name="keywords" content="DockPilot,macOS Dock,move Dock to display,multi monitor dock,dock follows cursor,menu bar app,macOS utility,Apple Silicon,open source" />
 <meta name="author" content="李明华 (Minghua Li)" />
 <meta name="robots" content="index,follow" />
@@ -185,6 +185,33 @@
 </section>
 
 </main>
+
+<section id="faq" class="sec">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">FAQ</div>
+      <h2>FAQ</h2>
+    </div>
+    <div class="features">
+      <div class="card" data-rise>
+        <h3>How do I keep the macOS Dock on the screen I'm using?</h3>
+        <p>Install DockPilot and choose "Follow the cursor" so the Dock moves to whichever display your cursor is on, or "Pin to a display" to lock it to one monitor. No system permissions are required.</p>
+      </div>
+      <div class="card" data-rise>
+        <h3>Why does my Mac Dock jump to the wrong monitor?</h3>
+        <p>macOS ties the Dock and menu bar to the "main display," so whenever your active screen isn't the main one, the Dock shows up on the wrong monitor. DockPilot fixes this by switching which display is main to match the screen you're using.</p>
+      </div>
+      <div class="card" data-rise>
+        <h3>Is DockPilot free and open source?</h3>
+        <p>Yes. DockPilot is fully open source under the MIT license and completely free — no ads, no in-app purchases. Download the DMG or build it from source.</p>
+      </div>
+      <div class="card" data-rise>
+        <h3>Does moving the Dock also move the menu bar?</h3>
+        <p>Yes. macOS has no public API to move only the Dock; the Dock and the menu bar both belong to the main display, so they move together. It's an honest trade-off DockPilot accepts in exchange for reliable behavior.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
 <footer>
   <div class="wrap foot-in">

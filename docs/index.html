@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-<title>DockPilot — 让程序坞待在你正用的那块屏 | macOS 多显示器 Dock 工具</title>
-<meta name="description" content="DockPilot 是一个极简的 macOS 菜单栏工具：自动把程序坞（Dock）跟随光标移到当前屏幕，或固定到你指定的显示器。解决多显示器下 Dock 不跟随的问题。零系统权限，常驻菜单栏，Apple Silicon 可用，MIT 开源免费。" />
+<title>DockPilot — 把 Mac 程序坞移到正在用的显示器 | 多屏工具</title>
+<meta name="description" content="DockPilot 是极简的 macOS 菜单栏工具：把 Mac 程序坞跟随光标移到当前屏幕，或固定到指定显示器，解决多显示器下 Dock 跑到错误屏幕、不跟随的问题。零系统权限，Apple Silicon，macOS 14+，MIT 开源免费。" />
 <meta name="keywords" content="DockPilot,macOS Dock,程序坞,多显示器,Dock 跟随,move dock to display,menu bar app,macOS 工具,multi monitor dock,Apple Silicon,开源" />
 <meta name="author" content="李明华 (Minghua Li)" />
 <meta name="robots" content="index,follow" />
@@ -185,6 +185,33 @@
 </section>
 
 </main>
+
+<section id="faq" class="sec">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">常见问题</div>
+      <h2>常见问题</h2>
+    </div>
+    <div class="features">
+      <div class="card" data-rise>
+        <h3>如何让 macOS 程序坞固定在我正在使用的屏幕上？</h3>
+        <p>安装 DockPilot 后选择「自动跟随光标」，Dock 会跟随光标移到你当前操作的那块屏；或用「固定到指定屏」把它锁定在某一台显示器上。无需任何系统权限。</p>
+      </div>
+      <div class="card" data-rise>
+        <h3>为什么我的 Mac 程序坞会跑到错误的显示器上？</h3>
+        <p>macOS 把程序坞和菜单栏都绑定在「主显示器」上。只要主屏不是你正在使用的那块，Dock 就会出现在错误的屏幕。DockPilot 通过切换主显示器把 Dock 带到当前屏来解决这个问题。</p>
+      </div>
+      <div class="card" data-rise>
+        <h3>DockPilot 免费且开源吗？</h3>
+        <p>是的。DockPilot 采用 MIT 许可完全开源，永久免费，没有广告、没有内购。你可以直接下载 DMG，也可以从源码自行构建。</p>
+      </div>
+      <div class="card" data-rise>
+        <h3>移动 Dock 会同时移动菜单栏吗？</h3>
+        <p>会。macOS 没有只移动程序坞的公开接口，Dock 与菜单栏同属主显示器，因此两者会一起移动。这是 DockPilot 为换取稳定可靠行为而坦诚接受的取舍。</p>
+      </div>
+    </div>
+  </div>
+</section>
 
 <footer>
   <div class="wrap foot-in">
